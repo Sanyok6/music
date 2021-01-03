@@ -1,0 +1,222 @@
+<html>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="description" content="Simply learn notes!">
+        <meta name="keywords" content="learn notes">
+        <meta name="author" content="Sanyok6">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice</title>
+    <style>
+        #holder {width:50%;}
+        @media screen and (max-width: 1300px) {
+            #holder {width: 75%;}
+        }
+        
+        .choice {width:165px;height:50px}
+        
+        .line {
+          height: 5px;
+          width: 100%;
+          background-color: black;
+            
+        }
+
+        .meausure {
+          height: 185px;
+          width: 7px;
+          background-color: black;
+        }
+            
+        .note {
+          height: 40px;
+          width: 60px;
+          background-color: #555;
+          border-radius: 50%;
+        }
+
+        #xline {
+          height: 5px;
+          width:100px;
+          background-color: #555;
+        }
+
+    </style>
+</head>
+
+
+<body>
+    <br>
+    <div class="container-fluid text-center" id="holder">
+        <h1 class="text-primary">Music notes practice</h1>
+        <div class="progress" style="height: 25px;">
+            <div class="progress-bar" id="progress" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        <br>
+
+        <div id="staff">
+            <div class="meausure"></div>
+            <div class="line" style="position:relative;top:-185px;"></div>
+            <div class="line" style="position:relative;top:-145px;"></div>
+            <div class="line" style="position:relative;top:-105px;"></div>
+            <div class="line" style="position:relative;top:-65px;"></div>
+            <div class="line" style="position:relative;top:-25px;"></div>
+            <div class="meausure" style="position:relative;left:100%;top:-210px;"></div>
+        </div>
+
+        <div id="note">
+        </div>
+        
+        <div id="xline" style="visibility: hidden !important;">
+        </div>
+        
+        <div class="container-fluid text-left">
+            <div id="clef">
+            </div>
+        </div>
+
+        <div id="choices" style="position:relative;top:-300px;">
+            <p style="font-size:20px">What note?</p>
+            <a class="btn btn-outline-primary choice" id="btn0"></a>
+            <a class="btn btn-outline-warning choice" id="btn1"></a>
+            <a class="btn btn-outline-info choice" id="btn2"></a>
+            <a class="btn btn-outline-success choice" id="btn3"></a>
+        </div>
+    </div>
+                
+    <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="trues">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                     <h5 class="modal-title" id="staticBackdropLabel">Practice complete!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+               <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-10">
+                                You have completed your practice! Click "Finish" to exit.
+                            </div>
+                            <div class="col-md-2 text-success">
+                                <svg width="5em" height="5em" viewBox="0 0 16 16" class="bi bi-check2-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" d="M15.354 2.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L8 9.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+                                    <path fill-rule="evenodd" d="M8 2.5A5.5 5.5 0 1 0 13.5 8a.5.5 0 0 1 1 0 6.5 6.5 0 1 1-3.25-5.63.5.5 0 1 1-.5.865A5.472 5.472 0 0 0 8 2.5z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Contunue</button>
+                  <button type="button" class="btn btn-primary" onclick="finish()">Finish</button>
+             </div>
+         </div>
+     </div>
+</body>
+
+<script>
+    var question_num = 0
+
+    var correct = null;
+    var clef = null;
+    
+    function next() {
+        question_num++
+        
+        var progress = document.getElementById("progress");
+        progress.style = "width: "+question_num*10+"%;background-color:#28A745;";
+        reset()
+        create()
+
+        if (question_num == 10) {
+            document.getElementById("staticBackdrop").innerHTML += '<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-check2" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/></svg>'
+            $('#staticBackdrop').modal('toggle')
+        }
+    }
+
+    function reset() {
+        for (i = 0; i<=3; i++) {
+            document.getElementById("btn"+i).onclick = "";
+        }
+        document.getElementById("xline").style = "visibility: hidden !important;"
+    }
+        
+    function wrong() {
+        question_num--
+        document.getElementById("progress").style = "width: "+question_num*10+"%;background-color:#EF2929;";
+    }
+        
+    function setup(note, clef) {
+        positions = [-188, -210, -232, -255, -277, -300, -322, -345, -365, -390, -412, -435]
+
+        if (note == "e" && clef == "base" || note == "c" && clef == "treble") {
+            document.getElementById("xline").style = "visibility: visible !important; position:relative; left:230px; top:-210px;"
+        }
+
+        if (clef == "treble") {
+            notes = ["c", "d", "e", "f", "g", "a", "b"]
+        
+            document.getElementById("note").innerHTML = "<div class='note' style='position:relative; left:250px; top:"+(positions[notes.indexOf(note)])+"px;'></div>"
+            document.getElementById("clef").innerHTML = "<img src='/img/trebleclef.png' height='220px' width='140px' style='position:relative;top:-425px;'>"
+            document.getElementById("choices").style = 'position:relative;top:-380px;'
+        } else {
+            notes = ["e", "f", "g","a","b","c","d","e","f","g","a","b"]
+            
+            document.getElementById("note").innerHTML = "<div class='note' style='position:relative; left:250px; top:"+(positions[notes.indexOf(note)])+"px;'></div>"
+            document.getElementById("clef").innerHTML = '<img src="/img/basecleff.png" height="140px" width="140px" style="position:relative;top:-435px;">'
+        }
+        
+    }
+    
+    function create() {
+        var cleffs = ["base", "treble"]
+        var notes = ["c", "d", "e", "f", "g", "a", "b"];
+        var octaves = ["lower", "center"]
+        
+        //var clef = cleffs[Math.floor(Math.random()*2)]
+        var clef = "treble"
+        var correct = notes[Math.floor(Math.random() * 7)];
+        
+        notes.splice(notes.indexOf(correct), 1)
+        
+        note_index = Math.floor(Math.random() * 4)
+        for (i = 0; i<=3; i++) {
+            if (i == note_index) {
+                document.getElementById("btn"+i).innerHTML = "<p style='font-size:30px'>"+correct+"</p>";
+                document.getElementById("btn"+i).onclick = next;
+            } else {
+                var c = notes[Math.floor(Math.random() * notes.length)];
+                document.getElementById("btn"+i).innerHTML = "<p style='font-size:30px'>"+c+"</p>";
+                notes.splice(notes.indexOf(c), 1);
+                document.getElementById("btn"+i).onclick = wrong;
+            }
+        }
+    
+        setup(correct, clef)
+    }
+
+    create()
+
+    function finish() {
+        
+
+  // Let's check whether notification permissions have already been granted
+  if (Notification.permission === "granted") {
+    setTimeout(() => {  var notification = new Notification("Time to practice your notes!"); }, 1000*60*10); 
+  }
+  else if (Notification.permission !== "denied") {
+    Notification.requestPermission().then(function (permission) {
+      if (permission === "granted") {
+        setTimeout(() => {  var notification = new Notification("Time to practice your notes!"); }, 1000*60*10); 
+      }
+    });
+  }
+}
+
+</script>
+
+<html>
